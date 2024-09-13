@@ -31,9 +31,19 @@ $button-text-color: #fff;
       justify-content: center;
     
       h1{
-        margin-bottom: 2rem;
+        margin: 2rem;
+      }
+      .title-resetPassword{
+        margin: 1rem;
+      }
+      .text-resetPassword{
+        width: 60%;
+        text-align: center;
+        margin: 2rem 0;
+
       }
       input[type="text"],
+      input[type="email"],
       input[type="password"] {
         padding: 0.5rem;
         margin-bottom: 1.5rem;
