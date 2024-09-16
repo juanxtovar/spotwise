@@ -1,11 +1,24 @@
-import Container from "../components/container"
+import DropdownMenu from "../components/dropdownMenu";
+import Container from "../components/container";
+import './styles/dashboard.scss';
+import SpotwiseBlanco from "../assets/img/spotwiseBlanco.png";
+import UserProfile from "../components/userProfile"; // Importar el nuevo componente
 
-export default function dashboardConductor() {
-    return (
-        <Container>
-            <h1>Dashboard Conductor</h1>
-            <p>This is the dashboard for conductors.</p>
-        </Container>
-    )
-
+export default function DashboardConductor() {
+  return (
+    <Container>
+      <header className="dashboard-header">
+        <div className="header-menu">
+          <DropdownMenu />
+        </div>
+        <div className="header-logo">
+          <img src={SpotwiseBlanco} alt="Logo Spotwise" />
+        </div>
+        <div className="header-user">
+          <UserProfile /> {/* Muestra el nombre del usuario */}
+        </div>
+      </header>
+      <div></div>
+    </Container>
+  );
 }
