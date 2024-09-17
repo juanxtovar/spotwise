@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from '@supabase/supabase-js';
+import { LuUserCircle2 } from "react-icons/lu";
+
 
 const supabase = createClient('https://kfptoctchniilzgtffns.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtmcHRvY3RjaG5paWx6Z3RmZm5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU5ODQ2MDEsImV4cCI6MjA0MTU2MDYwMX0.M01co6Y65XOSXHvViCSalZRCrVnNLAAPnqcZKjxuBrE');
 
@@ -70,9 +72,15 @@ export default function UserProfile() {
         cursor: "pointer",
         color: "#fff",
         fontSize:"16px",
-        fontWeight:"bold"
+        fontWeight:"bold",
+        display:"flex",
+        flexDirection:"row",
+        alignItems:"center",  
+        gap:"5px"
       }
-      }>{userName ? userName : "No se encontró información del usuario"}</button>
+      }>
+      <LuUserCircle2 size={35}/>
+      <p>{userName ? userName : "No se encontró información del usuario"}</p></button>
     </div>
   );
 }

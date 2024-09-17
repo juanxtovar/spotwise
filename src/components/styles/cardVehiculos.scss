@@ -1,0 +1,133 @@
+$primary-color: #39A900;
+$secondary-color: #007832;
+
+.vehicle-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+  
+    .vehicle-header {
+      width: 60%;
+      text-align: center;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: row;
+      justify-content: start;
+      align-items: center;
+      
+  
+      h2 {
+        font-size: 1.8em;
+        font-weight: 500;
+        color: #000;
+      }
+  
+      p {
+        font-size: 1.7em;
+        color: #afafaf;
+      }
+    }
+  
+    .vehicle-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      width: 60%;
+      box-sizing: border-box;
+      max-height: calc(100vh - 120px); 
+  
+      .vehicle-card {
+        background-color: #e0e0e0;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        position: relative;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+  
+        .container-img {
+          width: 100%;
+          height: 70%;
+  
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+  
+        .container-info {
+          width: 100%;
+          height: 30%;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          padding: 5px;
+  
+          .more-button {
+            background-color: $primary-color;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 40%;
+            height: 2rem;
+  
+            &:hover {
+              background-color: $secondary-color;
+            }
+          }
+  
+          .vehicle-placa {
+            font-weight: bold;
+            color: #000;
+            margin: 0;
+            width: 40%;
+          }
+        }
+  
+        .delete-button {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background-color: #e74c3c;
+          color: #fff;
+          border: none;
+          border-radius: 5px;
+          padding: 5px 10px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+  
+          &:hover {
+            background-color: #c0392b;
+          }
+        }
+      }
+  
+      .add-vehicle-button {
+        margin: 20px;
+        padding: 10px 20px;
+        background-color: $primary-color;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2em;
+        transition: background-color 0.3s ease;
+  
+        &:hover {
+          background-color: $secondary-color;
+        }
+      }
+    }
+  }
+  

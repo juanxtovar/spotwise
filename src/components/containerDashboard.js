@@ -1,13 +1,15 @@
 import React from 'react'
 
-export default function Container({ children }) {
+export default function ContainerDashboard({ children }) {
   return (
     <div style={{
         padding:0,
         margin:0,
         display: 'flex',
+        flexDirection:'column',
         height: '100vh',
-        overflow:'hidden',
+        overflowX:'hidden',
+        overflowY:'auto'
     }}>
         {children}
     </div>
