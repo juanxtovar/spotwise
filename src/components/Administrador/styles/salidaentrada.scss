@@ -1,0 +1,126 @@
+$primary-color: #39A900;
+$secondary-color: #007832;
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Work Sans', sans-serif; 
+
+    .container-sections{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      gap: 80px;
+    
+      .input-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 500px;
+    
+        label {
+          display: block;
+          margin-bottom: 20px;
+          font-weight: 600; 
+          color: #000000; 
+        }
+    
+        input {
+          width: 95%;
+          padding: 10px;
+          margin-bottom: 5px;
+          border: 1px solid #ccc;
+          border-radius: 10px;
+        }
+    
+        .button-container {
+          display: flex;
+          justify-content: space-between;
+          width: 90%;
+    
+          button {
+            padding: 8px 16px;
+            border: none;
+            background-color: $primary-color; 
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+    
+            &:hover {
+              background-color: $secondary-color;  
+            }
+          }
+        }
+      }
+    }
+  
+    .availability-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      width: 250px;
+  
+      h1 {
+        margin-bottom: 10px;
+        font-size: 1.5em;
+        color: #000000; 
+      }
+  
+      .availability-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        width: 90%;
+  
+        p {
+          margin: 0;
+          color: $secondary-color; 
+        }
+  
+        span {
+          font-weight: bold;
+          color: $secondary-color; 
+        }
+      }
+    }
+  
+    .table-section {
+      margin-top: 0px; 
+      width: 100%;
+      max-width: 1000px;
+  
+      table {
+        width: 100%;
+        border-collapse: collapse;
+  
+        th, td {
+          padding: 10px;
+          border: 1px solid #ddd;
+          text-align: left;
+        }
+  
+        th {
+          background-color: $primary-color; 
+          color: white;
+        }
+  
+        tbody tr:nth-child(even) {
+          background-color: #f9f9f9;
+        }
+      }
+    }
+  }
+  

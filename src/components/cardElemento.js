@@ -95,7 +95,7 @@ export default function CardElemento() {
     <div className="element-container">
         <div className="container-title">
             <h2 className='title'>Mis Elementos</h2>
-            <h2 className='title-length'>({items.length})</h2>
+            <p className='title-length'>({items.length})</p>
         </div>
       {items.length > 0 ? (
         <div className="element-list">
