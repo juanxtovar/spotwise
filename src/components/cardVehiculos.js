@@ -115,7 +115,9 @@ export default function VehicleList() {
             ) : (
                 <p>No hay vehículos registrados.</p>
             )}
-            <button className="add-vehicle-button" onClick={handleAddVehicle}>Agregar Vehículo</button>
+            <div className='container-add-button'>
+                <button className="add-vehicle-button" onClick={handleAddVehicle}>Agregar Vehículo</button>
+            </div>
             <AddVehicleModal isOpen={isModalOpen} onClose={handleCloseModal} />
         </div>
     </div>

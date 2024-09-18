@@ -45,7 +45,7 @@ export default function Login() {
 
     setSuccessMessage('¡Inicio de sesión exitoso!');
     setErrorMessage('');
-    navigate('/dashboardConductor'); 
+    navigate('/vehiculos'); 
 
   };
 

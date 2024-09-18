@@ -4,7 +4,8 @@ import Login from './screens/login';
 import Logup from './screens/logup';
 import ResetPassword from './screens/resetPassword';
 import ResetPassword2 from './screens/resetPassword2';
-import DashboardConductor from './screens/dashboardConductor';
+import Vehiculos from './screens/vehiculos';
+import Elementos from './screens/elementos';
 
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
   
   return (
     <div>
-      <h1>Hello, World!</h1>
+      <h1>Spotwise</h1>
       <button onClick={handleLogin}>Ir a Login</button>
       <button onClick={handleLogup}>Ir a Logup</button>
     </div>
@@ -37,8 +38,8 @@ function MainApp() {
         <Route path="/logup" element={<Logup />} />
         <Route path="/resetPassword" element={<ResetPassword/>}/>
         <Route path="/resetPassword2" element={<ResetPassword2/>}/>
-        <Route path="/dashboardConductor" element={<DashboardConductor/>}/>
-
+        <Route path="/vehiculos" element={<Vehiculos/>}/>
+        <Route path="/elementos" element={<Elementos/>}/>
 
       </Routes>
     </Router>

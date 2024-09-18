@@ -28,6 +28,8 @@ $secondary-color: #007832;
         padding: 12px 16px;
         color: white;
         cursor: pointer;
+        font-weight: 600;
+        font-size: 1.2rem;
   
         &:hover {
           background-color: $secondary-color;
@@ -42,6 +44,8 @@ $secondary-color: #007832;
       cursor: pointer;
       text-align: center;
       margin-bottom: 1rem;
+      font-weight: 600;
+      font-size: 1.2rem;
   
       &:hover {
         background-color: $secondary-color;

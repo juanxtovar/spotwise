@@ -3,7 +3,7 @@ import './styles/dashboard.scss';
 import Header from "../components/header";
 import CardVehiculos from "../components/cardVehiculos"
 
-export default function DashboardConductor() {
+export default function Vehiculos() {
   return (
     <ContainerDashboard>
       <Header/>
