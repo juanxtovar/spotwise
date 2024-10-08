@@ -1,4 +1,4 @@
-import SpotwiseBlanco from "../assets/img/spotwiseBlanco.png";
+import SpotwiseBlanco from "../assets/img/spotwiseBlanco2.png";
 import UserProfile from "./userProfile"
 import DropdownMenu from "./dropdownMenu";
 import "./styles/header.scss"

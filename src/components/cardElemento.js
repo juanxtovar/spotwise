@@ -66,7 +66,7 @@ export default function CardElemento() {
 
   // Función para agregar un nuevo elemento
   const handleAdd = () => {
-    setIsModalOpen(true); // Abrir el modal para agregar
+    setIsModalOpen(true);
   };
 
   // Función para eliminar un elemento
@@ -127,3 +127,4 @@ export default function CardElemento() {
     </div>
   );
 }
+ 
