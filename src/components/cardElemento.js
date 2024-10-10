@@ -38,7 +38,7 @@ export default function CardElemento() {
         const usuaId = usuario.UsuaId;
 
         const { data: items, error: itemsError } = await supabase
-          .from('ingresoElementos')
+          .from('vista_ingreso_elementos') 
           .select('*')
           .eq('UsuaId', usuaId);
 
@@ -59,17 +59,14 @@ export default function CardElemento() {
     fetchItems();
   }, []);
 
-  // Función para manejar el cierre del modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
-  // Función para agregar un nuevo elemento
   const handleAdd = () => {
     setIsModalOpen(true);
   };
 
-  // Función para eliminar un elemento
   const handleDelete = async (id) => {
     try {
       const { error } = await supabase
@@ -80,7 +77,6 @@ export default function CardElemento() {
       if (error) {
         setError('Error al eliminar el elemento: ' + error.message);
       } else {
-        // Actualizar la lista de elementos
         setItems(items.filter(item => item.InId !== id));
       }
     } catch (err) {
@@ -93,10 +89,10 @@ export default function CardElemento() {
 
   return (
     <div className="element-container">
-        <div className="container-title">
-            <h2 className='title'>Mis Elementos</h2>
-            <p className='title-length'>({items.length})</p>
-        </div>
+      <div className="container-title">
+        <h2 className="title">Mis Elementos</h2>
+        <p className="title-length">({items.length})</p>
+      </div>
       {items.length > 0 ? (
         <div className="element-list">
           {items.map(item => (
@@ -109,9 +105,12 @@ export default function CardElemento() {
                 className={`autorizacion-status ${item.InAutorizado ? 'authorized' : 'not-authorized'}`}
               >
               </div>
-              <div className='container-info'>
-                <h3>{item.InMarca}</h3>
-                <p>{item.InSerial}</p>   
+              <div className="container-info">
+                <h3>{item.nombre_elemento}</h3> 
+                <div className="container-p">
+                  <p>{item.InMarca}</p>
+                  <p>{item.InSerial}</p> 
+                </div>
               </div>
             </div>
           ))}
@@ -127,4 +126,3 @@ export default function CardElemento() {
     </div>
   );
 }
- 

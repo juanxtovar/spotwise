@@ -39,7 +39,7 @@
       position: relative;
       display: flex;
       flex-direction: row;
-      height: 4rem;
+      height: 5rem;
   
       &:hover {
         transform: translateY(-5px);
@@ -56,7 +56,6 @@
       }
   
   
-      /* Estilos para la autorización */
       .autorizacion-status {
         border-top-left-radius: 10px ;
         border-bottom-left-radius: 10px ;
@@ -77,13 +76,25 @@
       .container-info{
         display: flex;
         flex-direction: column;
-        padding: 5px;
+        padding: 7px;
+        width: 100%;
         h3 {
             margin: 0;
           }
       
-          p {
+          .container-p {
+            display: flex;
             margin: 5px 0;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 60%;
+            height: 50%;
+            align-items: center;
+
+            p{
+              font-size: 1em;
+              font-weight: 500;
+            }
           }
       }
     }

@@ -4,11 +4,11 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5); // Fondo oscuro transparente
+    background-color: rgba(0, 0, 0, 0.5);   
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; // Asegúrate de que el modal esté por encima de todo
+    z-index: 1000; 
   
     .modal-content {
       background-color: #fff;
@@ -28,13 +28,22 @@
       form {
         label {
           display: block;
-          margin-bottom: 10px;
+          
+          justify-content: center;
+          align-items: center;
+          width: 70%;
         }
-  
-        input {
+        select {
           width: 100%;
           padding: 8px;
-          margin-bottom: 10px;
+          margin: 5px 0 10px 0;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+        input {
+          width: calc( 100% - 18px );
+          padding: 8px;
+          margin: 5px 0 10px 0;
           border: 1px solid #ccc;
           border-radius: 5px;
         }
@@ -44,21 +53,21 @@
           border: none;
           border-radius: 5px;
           cursor: pointer;
-          background-color: #39A900; // Color principal
+          background-color: #39A900; 
           color: #fff;
           font-size: 1rem;
           transition: background-color 0.3s ease;
   
           &:hover {
-            background-color: #007832; // Color secundario en hover
+            background-color: #007832; 
           }
   
           &[type="button"] {
             margin-left: 10px;
-            background-color: #f44336; // Rojo para cancelar
+            background-color: #f44336;
   
             &:hover {
-              background-color: #c0392b; // Rojo más oscuro en hover
+              background-color: #c0392b;
             }
           }
         }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import './styles/addElementos.scss'
 
@@ -7,7 +7,48 @@ const supabase = createClient('https://kfptoctchniilzgtffns.supabase.co', 'eyJhb
 export default function AddElemento({ isOpen, onClose, setItems }) {
   const [serial, setSerial] = useState('');
   const [marca, setMarca] = useState('');
+  const [tipoId, setTipoId] = useState('');  
+  const [elementoId, setElementoId] = useState('');  
+  const [tipos, setTipos] = useState([]);  
+  const [elementos, setElementos] = useState([]);  
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchTipos = async () => {
+      const { data: tiposData, error: tiposError } = await supabase
+        .from('tipo')
+        .select("TipoId, TipoNombre");
+      
+      if (tiposError) {
+        setError('Error al obtener los tipos: ' + tiposError.message);
+      } else {
+        setTipos(tiposData);
+      }
+    };  
+
+    fetchTipos();
+  }, []);
+
+  const fetchElementos = async (tipoId) => {
+    console.log('Fetching elementos for TipoId:', tipoId);
+    const { data: elementosData, error: elementosError } = await supabase
+      .from('elemento')
+      .select("ElemId, ElemNombre")
+      .eq("TipoId", tipoId);
+
+    if (elementosError) {
+      setError('Error al obtener los elementos: ' + elementosError.message);
+    } else {
+      console.log('Elementos obtenidos para el tipo', tipoId, ':', elementosData);  
+      setElementos(elementosData);
+    }
+  };
+
+  const handleTipoChange = (e) => {
+    console.log('Tipo seleccionado:', e.target.value);
+    setTipoId(e.target.value);
+    fetchElementos(e.target.value);  
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +72,8 @@ export default function AddElemento({ isOpen, onClose, setItems }) {
         .insert([{ 
           InSerial: serial, 
           InMarca: marca,
-          UsuaId: usuario.UsuaId
+          UsuaId: usuario.UsuaId,
+          ElemId: elementoId  
         }])
         .select(); 
   
@@ -62,6 +104,30 @@ export default function AddElemento({ isOpen, onClose, setItems }) {
         <h3>Agregar Elemento</h3>
         {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
+          <label>
+            Tipo:
+            <select value={tipoId} onChange={handleTipoChange} required>
+              <option value="">Selecciona un tipo</option>
+              {tipos.map(tipo => (
+                <option key={tipo.TipoId} value={tipo.TipoId}>
+                  {tipo.TipoNombre}
+                </option>
+              ))}
+            </select>
+          </label>
+          
+          <label>
+            Elemento:
+            <select value={elementoId} onChange={(e) => setElementoId(e.target.value)} required>
+              <option value="">Selecciona un elemento</option>
+              {elementos.map(elemento => (
+                <option key={elemento.ElemId} value={elemento.ElemId}>
+                  {elemento.ElemNombre}
+                </option>
+              ))}
+            </select>
+          </label>
+
           <label>
             Serial:
             <input 
