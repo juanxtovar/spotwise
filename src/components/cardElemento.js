@@ -40,7 +40,7 @@ export default function CardElemento() {
         const { data: items, error: itemsError } = await supabase
           .from('vista_ingreso_elementos') 
           .select('*')
-          .eq('UsuaId', usuaId);
+          .eq('UsuaId', usuaId);  
 
         if (itemsError) {
           setError('Error al obtener los elementos: ' + itemsError.message);
@@ -106,7 +106,7 @@ export default function CardElemento() {
               >
               </div>
               <div className="container-info">
-                <h3>{item.nombre_elemento}</h3> 
+                <h3>{item.ElemNombre}</h3> 
                 <div className="container-p">
                   <p>{item.InMarca}</p>
                   <p>{item.InSerial}</p> 
@@ -126,3 +126,4 @@ export default function CardElemento() {
     </div>
   );
 }
+
