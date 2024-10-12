@@ -1,6 +1,6 @@
-import ContainerDashboard from "../containerDashboard";
+import ContainerDashboard from "../Conductor/containerDashboard";
 import './styles/dashboardAdmin.scss';
-import Header from "../header";
+import Header from "../Conductor/header";
 import Sede from "./SedeAdmin"
 
 export default function DashboardAdmin() {

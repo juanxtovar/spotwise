@@ -1,5 +1,5 @@
-import Container from "../components/container"
-import estacionamiento from '../assets/img/estacionamiento.jpg'
+import Container from "../../components/Conductor/container"
+import estacionamiento from '../../assets/img/estacionamiento.jpg'
 import  './styles/login.scss'
 
 export default function ResetPassword2() {

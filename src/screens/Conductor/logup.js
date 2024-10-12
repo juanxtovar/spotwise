@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import Container from "../components/container"
-import estacionamiento from '../assets/img/estacionamiento.jpg'
+import Container from "../../components/Conductor/container"
+import estacionamiento from '../../assets/img/estacionamiento.jpg'
 import './styles/login.scss'
 
 const supabase = createClient('https://kfptoctchniilzgtffns.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtmcHRvY3RjaG5paWx6Z3RmZm5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU5ODQ2MDEsImV4cCI6MjA0MTU2MDYwMX0.M01co6Y65XOSXHvViCSalZRCrVnNLAAPnqcZKjxuBrE')

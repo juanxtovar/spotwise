@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import Container from '../components/container';
-import estacionamiento from '../assets/img/estacionamiento.jpg';
+import Container from '../../components/Conductor/container';
+import estacionamiento from '../../assets/img/estacionamiento.jpg';
 import './styles/login.scss';
 import { useNavigate } from 'react-router-dom';
 

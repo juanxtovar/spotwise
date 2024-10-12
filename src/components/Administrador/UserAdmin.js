@@ -1,4 +1,4 @@
-import ContainerDashboard from "../containerDashboard";
+import ContainerDashboard from "../Conductor/containerDashboard";
 import './styles/dashboardAdmin.scss';
 import Header from "../header";
 

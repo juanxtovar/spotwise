@@ -1,11 +1,11 @@
-import Container from './components/container';
+import Container from './components/Conductor/container';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import Login from './screens/login';
-import Logup from './screens/logup';
-import ResetPassword from './screens/resetPassword';
-import ResetPassword2 from './screens/resetPassword2';
-import Vehiculos from './screens/vehiculos';
-import Elementos from './screens/elementos';
+import Login from './screens/Conductor/login';
+import Logup from './screens/Conductor/logup';
+import ResetPassword from './screens/Conductor/resetPassword';
+import ResetPassword2 from './screens/Conductor/resetPassword2';
+import Vehiculos from './screens/Conductor/vehiculos';
+import Elementos from './screens/Conductor/elementos';
 import DashboardAdmin from './components/Administrador/dashboardAdmin';
 import SalidaEntrada from './components/Administrador/salidaentrada'
 import './App.css';

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import '../components/styles/dropdown.scss';
+import './styles/dropdown.scss';
 import { createClient } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
 import { FaCar, FaClipboardList, FaShapes } from "react-icons/fa6";
