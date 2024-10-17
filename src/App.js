@@ -7,7 +7,9 @@ import ResetPassword2 from './screens/Conductor/resetPassword2';
 import Vehiculos from './screens/Conductor/vehiculos';
 import Elementos from './screens/Conductor/elementos';
 import DashboardAdmin from './components/Administrador/dashboardAdmin';
-import SalidaEntrada from './components/Administrador/salidaentrada'
+import SalidaEntrada from './components/Administrador/salidaentrada';
+import ReporteUsuarios from './screens/Conductor/reporteUsuarios';
+import PerfilUsuario from './screens/Conductor/perfilUsuario';
 import './App.css';
 import Logo from'./assets/img/spotwiseBlanco.png';
 
@@ -52,7 +54,8 @@ function MainApp() {
         <Route path="/elementos" element={<Elementos/>}/>
         <Route path="/dashboardAdmin" element={<DashboardAdmin/>}/>
         <Route path="/SalidaEntrada" element={<SalidaEntrada/>}/>
-
+        <Route path="/reporteUsuarios" element={<ReporteUsuarios/>}/>
+        <Route path="/perfilUsuario" element={<PerfilUsuario/>}/>
       </Routes>
     </Router>
   );

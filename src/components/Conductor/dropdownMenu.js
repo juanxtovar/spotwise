@@ -32,6 +32,10 @@ export default function DropdownMenu() {
     navigate('/elementos');
   };
 
+  const handleReportes = () => {
+    navigate('/reporteUsuarios');
+  };
+
   return (
     <>
       <button onClick={toggleDropdown} className={`menu-button ${isOpen ? "open" : ""}`}>
@@ -43,7 +47,7 @@ export default function DropdownMenu() {
         <ul className="dropdown-menu">
           <li className="dropdown-item" onClick={handleVehiculos}><FaCar size={25} style={{marginRight:"10px"}}/>Mis vehículos</li>
           <li className="dropdown-item" onClick={handleElementos}><FaShapes size={25} style={{marginRight:"10px"}}/>Mis elementos</li>
-          <li className="dropdown-item"><FaClipboardList size={27} style={{marginRight:"10px"}}/>Reportes</li>
+          <li className="dropdown-item" onClick={handleReportes}><FaClipboardList size={27} style={{marginRight:"10px"}}/>Reportes</li>
         </ul>
         <div className="dropdown-footer" onClick={handleLogout}><FaSignOutAlt size={25} style={{marginRight:"10px"}}/>
           Cerrar sesión
