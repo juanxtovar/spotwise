@@ -1,0 +1,70 @@
+$primary-color: #39A900;
+$secondary-color: #007832;
+$danger-color: #FF0000;
+
+.main-content {
+  padding: 20px;
+  background-color: #f4f4f4;
+  
+  h1 {
+    color: $primary-color;
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .validacion-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th {
+        background-color: $secondary-color;
+        color: white;
+        padding: 10px;
+        text-align: left;
+        border-bottom: 2px solid darken($secondary-color, 10%);
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      tr:hover {
+        background-color: lighten($secondary-color, 40%);
+      }
+
+      .auth-button {
+        padding: 8px 12px;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+
+        &.autorizar {
+          background-color: $primary-color;
+
+          &:hover {
+            background-color: darken($primary-color, 10%);
+          }
+        }
+
+        &.desautorizar {
+          background-color: $danger-color;
+
+          &:hover {
+            background-color: darken($danger-color, 10%);
+          }
+        }
+      }
+    }
+  }
+}
+  

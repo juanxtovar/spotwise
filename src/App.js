@@ -10,6 +10,8 @@ import DashboardAdmin from './components/Administrador/dashboardAdmin';
 import SalidaEntrada from './components/Administrador/salidaentrada';
 import ReporteUsuarios from './screens/Conductor/reporteUsuarios';
 import PerfilUsuario from './screens/Conductor/perfilUsuario';
+import Validacion from './components/Administrador/validacion';
+import ValidacionUsuarios from './components/Administrador/validacionusuarios';
 import './App.css';
 import Logo from'./assets/img/spotwiseBlanco.png';
 
@@ -56,6 +58,8 @@ function MainApp() {
         <Route path="/SalidaEntrada" element={<SalidaEntrada/>}/>
         <Route path="/reporteUsuarios" element={<ReporteUsuarios/>}/>
         <Route path="/perfilUsuario" element={<PerfilUsuario/>}/>
+        <Route path="/validacion" element={<Validacion/>}/>
+        <Route path="/validacionusuarios" element={<ValidacionUsuarios/>}/>
       </Routes>
     </Router>
   );

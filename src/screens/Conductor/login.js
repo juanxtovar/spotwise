@@ -27,27 +27,49 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
-
+  
+    // Intentar iniciar sesión
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-
+  
     if (signInError) {
       setErrorMessage('Error al iniciar sesión: ' + signInError.message);
       return;
     }
-
+  
     if (!data || !data.user) {
       setErrorMessage('No se recibió información del usuario');
       return;
     }
-
+  
+    // Consulta a la tabla usuarios para obtener el tipo de usuario
+    const { data: userData, error: userError } = await supabase
+      .from('usuarios')
+      .select('UsuaTipo')
+      .eq('UsuaCorreo', email) // Verifica el correo
+      .single();
+  
+    if (userError) {
+      setErrorMessage('Error al obtener información del usuario: ' + userError.message);
+      return;
+    }
+  
+    if (userData.UsuaTipo === 'Conductor') {
+      navigate('/vehiculos'); 
+    } else if (userData.UsuaTipo === 'Administrador') {
+      navigate("/dashboardAdmin"); 
+    } else {
+      setErrorMessage('Tipo de usuario no reconocido');
+    }
+  
     setSuccessMessage('¡Inicio de sesión exitoso!');
     setErrorMessage('');
-    navigate('/vehiculos'); 
-
   };
+  
+  
+  
 
   return (
     <Container>

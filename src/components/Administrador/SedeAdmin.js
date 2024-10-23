@@ -3,11 +3,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
-// Configura tu cliente de Supabase
 const supabase = createClient('https://kfptoctchniilzgtffns.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtmcHRvY3RjaG5paWx6Z3RmZm5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU5ODQ2MDEsImV4cCI6MjA0MTU2MDYwMX0.M01co6Y65XOSXHvViCSalZRCrVnNLAAPnqcZKjxuBrE');
 
 export default function Sede() {
-  const [selectedSede, setSelectedSede] = useState(null); // Ahora guardaremos tanto el SedId como el SedNombre
+  const [selectedSede, setSelectedSede] = useState(null); 
   const [sedes, setSedes] = useState([]);
   const navigate = useNavigate();
 
@@ -19,8 +18,7 @@ export default function Sede() {
     if (error) {
       console.error('Error fetching sedes:', error);
     } else {
-      console.log('Sedes obtenidas:', data);
-      setSedes(data); // Guarda las sedes obtenidas
+      setSedes(data); 
     }
   };
 
@@ -30,7 +28,7 @@ export default function Sede() {
 
   const handleSedeChange = (e) => {
     const sedeSeleccionada = sedes.find(sede => sede.SedId === parseInt(e.target.value));
-    setSelectedSede(sedeSeleccionada); // Guarda tanto el ID como el nombre de la sede seleccionada
+    setSelectedSede(sedeSeleccionada); 
   };
 
   const handleSubmit = (e) => {
@@ -39,10 +37,8 @@ export default function Sede() {
     if (!selectedSede) {
       alert('Por favor selecciona una sede');
     } else {
-      alert(`Sede seleccionada: ${selectedSede.SedNombre}`);
-      // Almacenar la sede seleccionada para usarla más adelante
-      localStorage.setItem('selectedSede', JSON.stringify(selectedSede)); // Guarda la sede seleccionada en el almacenamiento local
-      navigate('/salidaentrada'); // Redirige a la página de Salida/Entrada
+      localStorage.setItem('selectedSede', JSON.stringify(selectedSede)); 
+      navigate('/salidaentrada'); 
     }
   };
 
