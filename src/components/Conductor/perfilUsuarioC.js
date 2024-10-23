@@ -1,3 +1,4 @@
+import './styles/perfilUsuarioC.scss';
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -42,14 +43,25 @@ export default function Perfil() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div>
+    <div className="containerMain">
       {userData ? (
-        <div>
-          <h1>Perfil de Usuario</h1>
-          <p>Nombre: {userData.UsuaNombre}</p>
-          <p>Apellido: {userData.UsuaApellido}</p>
-          <p>Correo: {userData.UsuaCorreo}</p>
-          <p>Teléfono: {userData.UsuaTelefono}</p>
+        <div className="container">
+          <h1 className="title">Perfil de Usuario</h1>
+          <div className="info">
+            <p><strong>Nombre:</strong> {userData.UsuaNombre}</p>
+          </div>
+          <div className="info">
+            <p><strong>Apellido:</strong> {userData.UsuaApellido}</p>
+          </div>
+          <div className="info">
+            <p><strong>Correo:</strong> {userData.UsuaCorreo}</p>
+          </div>
+          <div className="info">
+            <p><strong>Teléfono:</strong> {userData.UsuaTelefono}</p>
+          </div>
+          <div className="info">
+            <p><strong>Tipo de usuario:</strong> {userData.UsuaTipo}</p>
+          </div>
         </div>
       ) : (
         <p>No se encontró el perfil del usuario.</p>

@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import AddVehicleModal from './addVehiculo';
 import InfoVehiculo from './infoVehiculo'; 
 import './styles/cardVehiculos.scss';
-import Image from '../../assets/img/estacionamiento.jpg'
+import PlaceholderImage from '../../assets/img/estacionamiento.jpg'; 
 
 const supabase = createClient('https://kfptoctchniilzgtffns.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtmcHRvY3RjaG5paWx6Z3RmZm5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU5ODQ2MDEsImV4cCI6MjA0MTU2MDYwMX0.M01co6Y65XOSXHvViCSalZRCrVnNLAAPnqcZKjxuBrE');
 
@@ -116,7 +116,10 @@ export default function CardVehiculos() {
             vehicles.map(vehicle => (
             <div className="vehicle-card" key={vehicle.VehId}>
                 <div className="container-img">
-                    <img src={Image} alt="Vehículo" />
+                    <img 
+                      src={vehicle.VehImagen ? vehicle.VehImagen : PlaceholderImage} 
+                      alt="Vehículo" 
+                    />
                 </div>
                 <div className="container-info">
                     <button className="more-button" onClick={() => handleInfoClick(vehicle)}>+ Info</button>

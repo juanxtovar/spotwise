@@ -10,6 +10,7 @@ export default function AddVehiculo({ isOpen, onClose }) {
     VehMarca: '',
     VehPlaca: '',
   });
+  const [image, setImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -18,6 +19,32 @@ export default function AddVehiculo({ isOpen, onClose }) {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const uploadImage = async (userId) => {
+    if (!image) return null;
+
+    const filePath = `${userId}/${image.name}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from('vehiculos')
+      .upload(filePath, image, { upsert: true });
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl }, error: publicUrlError } = supabase.storage
+      .from('vehiculos')
+      .getPublicUrl(filePath);
+
+    if (publicUrlError) throw publicUrlError;
+
+    return publicUrl;
   };
 
   const handleSubmit = async (e) => {
@@ -41,6 +68,8 @@ export default function AddVehiculo({ isOpen, onClose }) {
         return;
       }
 
+      const imageUrl = await uploadImage(usuario.UsuaId);
+
       const { error: insertError } = await supabase
         .from('vehiculo')
         .insert([
@@ -49,6 +78,7 @@ export default function AddVehiculo({ isOpen, onClose }) {
             VehTipo: formData.VehTipo,
             VehMarca: formData.VehMarca,
             VehPlaca: formData.VehPlaca,
+            VehImagen: imageUrl,  
           }
         ]);
 
@@ -63,6 +93,7 @@ export default function AddVehiculo({ isOpen, onClose }) {
         VehMarca: '',
         VehPlaca: '',
       });
+      setImage(null);
 
       setTimeout(() => {
         setSuccessMessage('');
@@ -100,6 +131,11 @@ export default function AddVehiculo({ isOpen, onClose }) {
             placeholder="Placa"
             value={formData.VehPlaca}
             onChange={handleChange}
+          />
+          <input 
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
           />
           <button type="submit">Agregar</button>
           {errorMessage && <p className="error-message">{errorMessage}</p>}
