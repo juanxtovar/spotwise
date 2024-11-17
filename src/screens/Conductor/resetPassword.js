@@ -1,5 +1,6 @@
 import Container from "../../components/Conductor/container"
 import estacionamiento from '../../assets/img/estacionamiento.jpg'
+import logo from '../../assets/img/spotwiseVerde.png'
 import  './styles/login.scss'
 
 export default function ResetPassword() {
@@ -17,6 +18,9 @@ export default function ResetPassword() {
             <input type="submit" value="Enviar codigo" />
             <a href="/login">Volver</a>
           </form>
+          <div className='logo-container'>
+            <img src={logo} alt='Spotwise'/>
+          </div>
         </div>
     </Container>
     ) 

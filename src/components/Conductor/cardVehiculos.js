@@ -67,22 +67,29 @@ export default function CardVehiculos() {
   }, []);
 
   const handleDelete = async (vehId) => {
+    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este vehículo?');
+  
+    if (!confirmDelete) {
+      return;  
+    }
+  
     try {
       const { error } = await supabase
         .from('vehiculo')
         .delete()
         .eq('VehId', vehId);
-
+  
       if (error) {
         setError('Error al eliminar el vehículo.');
         return;
       }
-
+  
       setVehicles(vehicles.filter(vehicle => vehicle.VehId !== vehId));
     } catch (err) {
       setError('Error inesperado al eliminar el vehículo.');
     }
   };
+  
 
   const handleAddVehicle = () => {
     setIsModalOpen(true);
@@ -105,38 +112,50 @@ export default function CardVehiculos() {
   if (loading) return <p className="loading-message">Cargando vehículos...</p>;
   if (error) return <p className="error-message">{error}</p>;
 
+  const handleVehicleAdded = (newVehicle) => {
+    setVehicles((prevVehicles) => [...prevVehicles, newVehicle]);
+  };
+  
   return (
     <div className='vehicle-main'>
-        <div className="vehicle-header">
-            <h2>Mis vehículos</h2>
-            <p>({vehicles.length})</p>
-        </div>
-        <div className="vehicle-list">
+      <div className="vehicle-header">
+        <h2>Mis vehículos</h2>
+        <p>({vehicles.length})</p>
+      </div>
+      <div className="vehicle-list">
         {vehicles.length > 0 ? (
-            vehicles.map(vehicle => (
+          vehicles.map(vehicle => (
             <div className="vehicle-card" key={vehicle.VehId}>
-                <div className="container-img">
-                    <img 
-                      src={vehicle.VehImagen ? vehicle.VehImagen : PlaceholderImage} 
-                      alt="Vehículo" 
-                    />
-                </div>
-                <div className="container-info">
-                    <button className="more-button" onClick={() => handleInfoClick(vehicle)}>+ Info</button>
-                    <p className="vehicle-placa">{vehicle.VehPlaca}</p>
-                </div>
-                <button className="delete-button" onClick={() => handleDelete(vehicle.VehId)}>Eliminar</button>
+              <div className="container-img">
+                <img 
+                  src={vehicle.VehImagen ? vehicle.VehImagen : PlaceholderImage} 
+                  alt="Vehículo" 
+                />
+              </div>
+              <div className="container-info">
+                <button className="more-button" onClick={() => handleInfoClick(vehicle)}>+ Info</button>
+                <p className="vehicle-placa">{vehicle.VehPlaca}</p>
+              </div>
+              <button className="delete-button" onClick={() => handleDelete(vehicle.VehId)}>Eliminar</button>
             </div>
-                ))
-            ) : (
-                <p>No hay vehículos registrados.</p>
-            )}
-            <div className='container-add-button'>
-                <button className="add-vehicle-button" onClick={handleAddVehicle}>Agregar Vehículo</button>
-            </div>
-            <AddVehicleModal isOpen={isModalOpen} onClose={handleCloseModal} />
-            <InfoVehiculo isOpen={isInfoModalOpen} vehicle={selectedVehicle} onClose={handleCloseInfoModal} />
+          ))
+        ) : (
+          <p>No hay vehículos registrados.</p>
+        )}
+        <div className='container-add-button'>
+          <button className="add-vehicle-button" onClick={handleAddVehicle}>Agregar Vehículo</button>
         </div>
+        <AddVehicleModal 
+          isOpen={isModalOpen} 
+          onClose={handleCloseModal} 
+          onVehicleAdded={handleVehicleAdded} 
+        />
+        <InfoVehiculo 
+          isOpen={isInfoModalOpen} 
+          vehicle={selectedVehicle} 
+          onClose={handleCloseInfoModal} 
+        />
+      </div>
     </div>
   );
 }

@@ -13,7 +13,7 @@ import PerfilUsuario from './screens/Conductor/perfilUsuario';
 import Validacion from './components/Administrador/validacion';
 import ValidacionUsuarios from './components/Administrador/validacionusuarios';
 import './App.css';
-import Logo from'./assets/img/spotwiseBlanco.png';
+import Logo from'./assets/img/Spotwise.gif';
 
 function App() {
   const navigate = useNavigate();

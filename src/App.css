@@ -3,8 +3,7 @@ body{
     padding: 0;
 }
 .background{
-    background: rgb(22,64,1);
-    background: linear-gradient(90deg, rgba(22,64,1,1) 0%, rgba(57,169,0,1) 70%, rgb(255, 255, 255) 100%);
+    background: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,7 +20,7 @@ body{
 }
 
 .text{
-    color: white;
+    color: #000;
     font-size: 1.5rem;
     width: 50%;
     text-align: center;
@@ -36,7 +35,7 @@ body{
     height: 4rem;
 }
 .button-container button{
-    background-color: #000;
+    background-color: #39A900;
     color: #fff;
     border: none;
     width: 50%;
@@ -49,8 +48,8 @@ body{
     cursor: pointer;
 }
 .button-container button:hover{
-    background-color: #fff;
-    color: #000;
+    background-color: #007832;
+    color: #fff;
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }

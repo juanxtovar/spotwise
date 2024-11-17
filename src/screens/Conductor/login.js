@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Container from '../../components/Conductor/container';
 import estacionamiento from '../../assets/img/estacionamiento.jpg';
+import logo from '../../assets/img/spotwiseVerde.png'
 import './styles/login.scss';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,9 +14,7 @@ export default function Login() {
     password: ''
   });
 
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const navigate =useNavigate();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -28,31 +27,29 @@ export default function Login() {
     e.preventDefault();
     const { email, password } = formData;
   
-    // Intentar iniciar sesión
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
   
     if (signInError) {
-      setErrorMessage('Error al iniciar sesión: ' + signInError.message);
+      alert('Error al iniciar sesión: ' + signInError.message);
       return;
     }
   
     if (!data || !data.user) {
-      setErrorMessage('No se recibió información del usuario');
+      alert('No se recibió información del usuario');
       return;
     }
-  
-    // Consulta a la tabla usuarios para obtener el tipo de usuario
+
     const { data: userData, error: userError } = await supabase
       .from('usuarios')
       .select('UsuaTipo')
-      .eq('UsuaCorreo', email) // Verifica el correo
+      .eq('UsuaCorreo', email) 
       .single();
   
     if (userError) {
-      setErrorMessage('Error al obtener información del usuario: ' + userError.message);
+      alert('Error al obtener información del usuario: ' + userError.message);
       return;
     }
   
@@ -61,16 +58,12 @@ export default function Login() {
     } else if (userData.UsuaTipo === 'Administrador') {
       navigate("/dashboardAdmin"); 
     } else {
-      setErrorMessage('Tipo de usuario no reconocido');
+      alert('Tipo de usuario no reconocido');
     }
   
-    setSuccessMessage('¡Inicio de sesión exitoso!');
-    setErrorMessage('');
+    alert('¡Inicio de sesión exitoso!');
   };
   
-  
-  
-
   return (
     <Container>
       <div className="image-container">
@@ -94,11 +87,12 @@ export default function Login() {
             onChange={handleChange}
           />
           <input type="submit" value="Ingresar" />
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
-          {successMessage && <p className="success-message">{successMessage}</p>}
           <a href="/resetPassword">¿Olvidaste tu contraseña?</a>
           <p>¿No tienes cuenta? <a href="/logup">Regístrate aquí</a></p>
         </form>
+        <div className='logo-container'>
+        <img src={logo} alt='Spotwise'/>
+        </div>
       </div>
     </Container>
   );

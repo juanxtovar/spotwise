@@ -4,15 +4,13 @@ import './styles/addVehiculo.scss';
 
 const supabase = createClient('https://kfptoctchniilzgtffns.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtmcHRvY3RjaG5paWx6Z3RmZm5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU5ODQ2MDEsImV4cCI6MjA0MTU2MDYwMX0.M01co6Y65XOSXHvViCSalZRCrVnNLAAPnqcZKjxuBrE');
 
-export default function AddVehiculo({ isOpen, onClose }) {
+export default function AddVehiculo({ isOpen, onClose, onVehicleAdded }) {
   const [formData, setFormData] = useState({
     VehTipo: '',
     VehMarca: '',
     VehPlaca: '',
   });
   const [image, setImage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
 
   const handleChange = (e) => {
     setFormData({
@@ -23,27 +21,32 @@ export default function AddVehiculo({ isOpen, onClose }) {
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
-      setImage(e.target.files[0]);
+      const file = e.target.files[0];
+  
+      const sanitizedFileName = file.name.replace(/\s+/g, '-'); 
+      const renamedFile = new File([file], sanitizedFileName, { type: file.type });
+  
+      setImage(renamedFile);
     }
   };
 
   const uploadImage = async (userId) => {
     if (!image) return null;
-
-    const filePath = `${userId}/${image.name}`;
-    
+  
+    const filePath = `${userId}/${image.name}`;   
+  
     const { error: uploadError } = await supabase.storage
       .from('vehiculos')
       .upload(filePath, image, { upsert: true });
-
+  
     if (uploadError) throw uploadError;
-
+  
     const { data: { publicUrl }, error: publicUrlError } = supabase.storage
       .from('vehiculos')
       .getPublicUrl(filePath);
-
+  
     if (publicUrlError) throw publicUrlError;
-
+  
     return publicUrl;
   };
 
@@ -53,7 +56,7 @@ export default function AddVehiculo({ isOpen, onClose }) {
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
-        setErrorMessage('No se pudo obtener el usuario autenticado.');
+        alert('No se pudo obtener el usuario autenticado.');
         return;
       }
 
@@ -64,30 +67,30 @@ export default function AddVehiculo({ isOpen, onClose }) {
         .single();
 
       if (usuarioError || !usuario) {
-        setErrorMessage('No se encontró el usuario.');
+        alert('No se encontró el usuario.');
         return;
       }
 
       const imageUrl = await uploadImage(usuario.UsuaId);
 
-      const { error: insertError } = await supabase
+      const { data: insertedVehicle, error: insertError } = await supabase
         .from('vehiculo')
-        .insert([
-          {
-            UsuaId: usuario.UsuaId,
-            VehTipo: formData.VehTipo,
-            VehMarca: formData.VehMarca,
-            VehPlaca: formData.VehPlaca,
-            VehImagen: imageUrl,  
-          }
-        ]);
+        .insert([{
+          UsuaId: usuario.UsuaId,
+          VehTipo: formData.VehTipo,
+          VehMarca: formData.VehMarca,
+          VehPlaca: formData.VehPlaca,
+          VehImagen: imageUrl,  
+        }])
+        .select('*')
+        .single();
 
       if (insertError) {
-        setErrorMessage('Error al agregar el vehículo.');
+        alert('Error al agregar el vehículo.');
         return;
       }
 
-      setSuccessMessage('¡Vehículo agregado exitosamente!');
+      alert('¡Vehículo agregado exitosamente!');
       setFormData({
         VehTipo: '',
         VehMarca: '',
@@ -95,12 +98,13 @@ export default function AddVehiculo({ isOpen, onClose }) {
       });
       setImage(null);
 
+      onVehicleAdded(insertedVehicle);
+
       setTimeout(() => {
-        setSuccessMessage('');
-        onClose(); 
+        onClose();
       }, 2000);
     } catch (err) {
-      setErrorMessage('Error inesperado.');
+      alert('Error inesperado.');
     }
   };
 
@@ -117,6 +121,7 @@ export default function AddVehiculo({ isOpen, onClose }) {
             placeholder="Tipo de vehículo"
             value={formData.VehTipo}
             onChange={handleChange}
+            required
           />
           <input
             type="text"
@@ -124,6 +129,7 @@ export default function AddVehiculo({ isOpen, onClose }) {
             placeholder="Marca"
             value={formData.VehMarca}
             onChange={handleChange}
+            required
           />
           <input
             type="text"
@@ -131,6 +137,7 @@ export default function AddVehiculo({ isOpen, onClose }) {
             placeholder="Placa"
             value={formData.VehPlaca}
             onChange={handleChange}
+            required
           />
           <input 
             type="file"
@@ -138,8 +145,6 @@ export default function AddVehiculo({ isOpen, onClose }) {
             onChange={handleImageChange}
           />
           <button type="submit">Agregar</button>
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
-          {successMessage && <p className="success-message">{successMessage}</p>}
         </form>
       </div>
     </div>
