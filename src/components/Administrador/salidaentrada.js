@@ -1,43 +1,55 @@
+import { useState, useEffect } from 'react';
 import ContainerDashboard from "../Conductor/containerDashboard";
 import './styles/salidaentrada.scss';
-import Header from "../Conductor/header";
+import Header from "./header2";
 import { createClient } from '@supabase/supabase-js';
-import { useState, useEffect } from 'react';
+import { DateTime } from 'luxon';
 
 const supabase = createClient('https://kfptoctchniilzgtffns.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtmcHRvY3RjaG5paWx6Z3RmZm5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU5ODQ2MDEsImV4cCI6MjA0MTU2MDYwMX0.M01co6Y65XOSXHvViCSalZRCrVnNLAAPnqcZKjxuBrE');
 
 export default function SalidaEntrada() {
-  const [planillas, setPlanillas] = useState([]);
-  const [availability, setAvailability] = useState({});
   const [vehicleInfo, setVehicleInfo] = useState('');
   const [vehiculoData, setVehiculoData] = useState(null);
+  const [availability, setAvailability] = useState({});
+  const [planillas, setPlanillas] = useState([]);
+  const [vehId, setVehId] = useState(null);
+  const [usuaId, setUsuaId] = useState(null);
+  const [sedId, setSedId] = useState(null);
+  const [disponibilidad, setDisponibilidad] = useState([]);
+  
 
-  const fetchAvailability = async () => {
-    // Obtener la sede seleccionada de localStorage
+  const obtenerAdminYSede = async () => {
     const selectedSede = JSON.parse(localStorage.getItem('selectedSede'));
-    
     if (!selectedSede || !selectedSede.SedId) {
-      console.error('Sede no seleccionada.');
-      return;
+      alert('Sede no seleccionada. Por favor selecciona una sede antes de continuar.');
+      return null; 
+    }
+    
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !sessionData) {
+      console.error('Error al obtener la sesión:', sessionError);
+      return null;
     }
   
-    const { data, error } = await supabase
-      .from('parqueo')
-      .select('*')
-      .eq('SedeId', selectedSede.SedId); // Filtrar por la sede actual
+    const { session } = sessionData;
+    const authId = session.user.id;
   
-    if (error) {
-      console.error('Error fetching availability:', error);
-    } else {
-      const availableSpaces = {};
-      data.forEach(item => {
-        availableSpaces[item.ParqTipo] = item.ParqCantidad; // Almacenar disponibilidad por tipo
-      });
-      setAvailability(availableSpaces);
+    const { data: adminData, error: adminError } = await supabase
+      .from('usuarios')
+      .select('UsuaNombre, UsuaApellido')
+      .eq('AuthId', authId)
+      .single();
+  
+    if (adminError || !adminData) {
+      console.error('Error al obtener los datos del administrador:', adminError);
+      return null;
     }
+  
+    const adminNombreCompleto = `${adminData.UsuaNombre} ${adminData.UsuaApellido}`;
+    return { adminNombreCompleto, sedId: selectedSede.SedId };
   };
   
-
+  
 
   const buscarVehiculoPorPlaca = async () => {
     const { data: vehiculo, error } = await supabase
@@ -54,287 +66,30 @@ export default function SalidaEntrada() {
     setVehiculoData(vehiculo); 
     return vehiculo;
   };
-
-  const handleRegistrarEntrada = async () => {
-    try {
-      const vehiculo = await buscarVehiculoPorPlaca();
-      if (!vehiculo) {
-        alert('Vehículo no encontrado');
-        return;
-      }
-  
-      // Verificar si el vehículo ya tiene una entrada activa
-      const { data: entradaActiva, error: errorEntradaActiva } = await supabase
-        .from('planilla')
-        .select('*')
-        .eq('VehId', vehiculo.VehId)
-        .is('FechaSalida', null) // Verifica si hay una entrada sin salida
-        .single();
-  
-      if (errorEntradaActiva) {
-        console.error('Error al verificar entrada activa:', errorEntradaActiva);
-        alert('Error al verificar el estado del vehículo.');
-        return;
-      }
-  
-      if (entradaActiva) {
-        alert('El vehículo ya está registrado. Debe salir antes de ingresar nuevamente.');
-        return;
-      }
-  
-      const { data: usuario, error: errorUsuario } = await supabase
-        .from('usuarios')
-        .select('*')
-        .eq('UsuaId', vehiculo.UsuaId)
-        .single();
-  
-      if (errorUsuario || !usuario) {
-        alert('Usuario no encontrado');
-        return;
-      }
-  
-      // Obtener la sesión actual del administrador
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError || !session) {
-        console.error('Error al obtener la sesión:', sessionError);
-        alert('Error al obtener la sesión del administrador');
-        return;
-      }
-  
-      const authId = session.user.id;
-  
-      // Obtener el nombre del administrador
-      const { data: adminData, error: adminError } = await supabase
-        .from('usuarios')
-        .select('UsuaNombre, UsuaApellido')
-        .eq('AuthId', authId)
-        .single();
-  
-      if (adminError || !adminData) {
-        console.error('Error al obtener los datos del administrador:', adminError);
-        alert('No se pudo obtener el nombre del administrador');
-        return;
-      }
-  
-      const adminNombreCompleto = `${adminData.UsuaNombre} ${adminData.UsuaApellido}`;
-  
-      // Obtener la sede seleccionada de localStorage
-      const selectedSede = JSON.parse(localStorage.getItem('selectedSede'));
-      if (!selectedSede || !selectedSede.SedId) {
-        alert('Sede no seleccionada. Por favor selecciona una sede antes de continuar.');
-        return;
-      }
-  
-      const fechaConZonaHoraria = new Date();
-      fechaConZonaHoraria.setHours(fechaConZonaHoraria.getHours() - fechaConZonaHoraria.getTimezoneOffset() / 60);
-  
-      // Obtener el tipo de vehículo
-      const tipoVehiculo = vehiculo.VehTipo;
-  
-      // Verificar disponibilidad en la tabla parqueo
-      const { data: disponibilidad, error: errorDisponibilidad } = await supabase
-        .from('parqueo')
-        .select('*')
-        .eq('SedeId', selectedSede.SedId)
-        .eq('ParqTipo', tipoVehiculo)
-        .single();
-  
-      if (errorDisponibilidad || !disponibilidad || disponibilidad.ParqCantidad <= 0) {
-        alert('No hay espacios disponibles para este tipo de vehículo.');
-        return;
-      }
-  
-      // Actualizar la disponibilidad reduciendo el contador
-      const newCount = disponibilidad.ParqCantidad - 1;
-  
-      const { error: updateError } = await supabase
-        .from('parqueo')
-        .update({ ParqCantidad: newCount })
-        .eq('ParqId', disponibilidad.ParqId); // Asegúrate de tener la ParqId
-  
-      if (updateError) {
-        console.error('Error actualizando la disponibilidad:', updateError);
-        alert('Error al actualizar la disponibilidad.');
-        return;
-      }
-  
-      // Insertar el registro en la tabla 'planilla', utilizando SedId
-      const { error: insertError } = await supabase
-        .from('planilla')
-        .insert([{
-          FechaEntrada: fechaConZonaHoraria.toISOString(),
-          AdminEntrada: adminNombreCompleto,
-          VehId: vehiculo.VehId,
-          UsuaId: usuario.UsuaId,
-          SedId: selectedSede.SedId, // Cambiado a SedId
-          FechaSalida: null,
-          DuracionEstacionamiento: null,
-          AdminSalida: null,
-        }]);
-  
-      if (insertError) {
-        console.error('Error al registrar la entrada:', insertError);
-        alert('Error al registrar la entrada. Verifica los permisos o políticas de seguridad.');
-      } else {
-        alert('Entrada registrada exitosamente');
-        fetchPlanillas(); // Actualizar la tabla de planillas
-        fetchAvailability(); // Actualizar disponibilidad
-      }
-    } catch (error) {
-      console.error('Error registrando entrada:', error);
-      alert('Ocurrió un error inesperado al registrar la entrada.');
+  const actualizarDisponibilidad = async () => {
+    const { data, error } = await supabase
+      .from('parqueo')
+      .select('ParqId, ParqCantidad, ParqTipo, SedeId');
+    
+    if (error) {
+      console.error('Error al obtener disponibilidad de parqueo:', error);
+      return;
     }
+
+    console.log('Disponibilidad actualizada:', data);
   };
 
 
-
-
-
-
-  // Definir la función calcularDuracion fuera de handleRegistrarSalida
-const calcularDuracion = (fechaEntrada, fechaSalida) => {
-  const entrada = new Date(fechaEntrada);
-  const salida = new Date(fechaSalida);
-
-  const diffMs = salida - entrada; // Diferencia en milisegundos
-  const diffHrs = Math.floor(diffMs / (1000 * 60 * 60)); // Diferencia en horas
-  const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60)); // Diferencia en minutos
-
-  return `${diffHrs} horas y ${diffMins} minutos`;
-};
-
-const handleRegistrarSalida = async () => {
-  try {
-    const vehiculo = await buscarVehiculoPorPlaca();
-    if (!vehiculo) {
-      alert('Vehículo no encontrado');
-      return;
-    }
-
-    // Obtener la sesión actual del administrador
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-    if (sessionError || !session) {
-      console.error('Error al obtener la sesión:', sessionError);
-      alert('Error al obtener la sesión del administrador');
-      return;
-    }
-
-    const authId = session.user.id;
-
-    // Obtener el nombre del administrador
-    const { data: adminData, error: adminError } = await supabase
-      .from('usuarios')
-      .select('UsuaNombre, UsuaApellido')
-      .eq('AuthId', authId)
-      .single();
-
-    if (adminError || !adminData) {
-      console.error('Error al obtener los datos del administrador:', adminError);
-      alert('No se pudo obtener el nombre del administrador');
-      return;
-    }
-
-    // Obtener la sede seleccionada de localStorage
-    const selectedSede = JSON.parse(localStorage.getItem('selectedSede'));
-    if (!selectedSede || !selectedSede.SedId) {
-      alert('Sede no seleccionada. Por favor selecciona una sede antes de continuar.');
-      return;
-    }
-
-    // Verificar si el vehículo tiene una entrada activa
-    const { data: entradaActiva, error: errorEntradaActiva } = await supabase
-      .from('planilla')
-      .select('*')
-      .eq('VehId', vehiculo.VehId)
-      .is('FechaSalida', null) // Asegúrate de que no tenga salida
-      .single();
-
-    if (errorEntradaActiva || !entradaActiva) {
-      alert('No hay entrada activa para este vehículo. Debe ingresar primero.');
-      return;
-    }
-
-    const fechaSalida = new Date();
-    const duracionEstacionamiento = calcularDuracion(entradaActiva.FechaEntrada, fechaSalida);
-
-    // Actualizar el registro de la entrada para registrar la salida
-    const { error: updateError } = await supabase
-      .from('planilla')
-      .update({
-        FechaSalida: fechaSalida.toISOString(),
-        DuracionEstacionamiento: duracionEstacionamiento,
-        AdminSalida: `${adminData.UsuaNombre} ${adminData.UsuaApellido}` // Ahora está definido
-      })
-      .eq('VehId', vehiculo.VehId)
-      .is('FechaSalida', null); // Asegúrate de que se está actualizando el correcto
-
-    // Verificar si hay error al actualizar
-    if (updateError) {
-      console.error('Error al registrar la salida:', updateError);
-      alert('Error al registrar la salida. Detalles: ' + updateError.message);
-      return;
-    }
-
-    // Actualizar la disponibilidad en parqueo
-    const { data: disponibilidad, error: errorDisponibilidad } = await supabase
-      .from('parqueo')
-      .select('*')
-      .eq('SedeId', selectedSede.SedId) // Ahora está definido
-      .eq('ParqTipo', vehiculo.VehTipo)
-      .limit(1)
-      .single();
-
-    // Verificar si disponibilidad es nulo
-    if (errorDisponibilidad || !disponibilidad) {
-      console.error('Error al obtener la disponibilidad:', errorDisponibilidad);
-      alert('No se encontró disponibilidad para este tipo de vehículo.');
-      return;
-    }
-
-    const newCount = disponibilidad.ParqCantidad + 1;
-
-    const { error: updateParqueoError } = await supabase
-      .from('parqueo')
-      .update({ ParqCantidad: newCount })
-      .eq('ParqId', disponibilidad.ParqId);
-
-    // Verificar si hay error al actualizar parqueo
-    if (updateParqueoError) {
-      console.error('Error actualizando la disponibilidad:', updateParqueoError);
-      alert('Error al actualizar la disponibilidad. Detalles: ' + updateParqueoError.message);
-      return;
-    }
-
-    alert('Salida registrada exitosamente');
-    fetchPlanillas(); // Actualizar la tabla de planillas
-    fetchAvailability(); // Actualizar disponibilidad
-
-  } catch (error) {
-    console.error('Error registrando salida:', error);
-    alert('Ocurrió un error inesperado al registrar la salida.');
-  }
-};
-  
-  
-  
-  
-
-  useEffect(() => {
-    fetchPlanillas();
-    fetchAvailability(); // Llama a la función para obtener disponibilidad
-  }, []);
-
-
-  // fetchplanilla - useEffect
   const fetchPlanillas = async () => {
+    const limit = 4; 
     const { data, error } = await supabase
-      .from('entradasalida') // Cambia 'entradaSalida' por el nombre correcto de la vista
-      .select('UsuaId, UsuaNombre, UsuaApellido, UsuaTipo, VehPlaca, VehAutorizacion, FechaEntrada, FechaSalida, DuracionEstacionamiento, AdminEntrada, AdminSalida, SedNombre')
+      .from('entradasalida') 
+      .select('*')
       .order('FechaEntrada', { ascending: false }) 
-      .limit(7); 
+      .limit(limit);
 
     if (error) {
-      console.error('Error fetching planillas:', error);
+      console.error("Error al cargar planillas:", error);
     } else {
       setPlanillas(data);
     }
@@ -342,15 +97,278 @@ const handleRegistrarSalida = async () => {
 
   useEffect(() => {
     fetchPlanillas();
-  }, []);
+  }, []);  
   
+  const verificarIngresoAnterior = async (vehId) => {
+    const { data: ingresoPrevio, error } = await supabase
+      .from('planilla')
+      .select('FechaSalida')
+      .eq('VehId', vehId)
+      .order('FechaEntrada', { ascending: false })
+      .limit(1)
+      .single();
+  
+    if (error) {
+      console.error('Error al verificar ingreso previo:', error);
+      return true; 
+    }
+  
+    return ingresoPrevio && ingresoPrevio.FechaSalida;
+  };
+
+  const verificarDisponibilidad = async (vehTipo, sedId) => {
+    try {
+
+      const { data, error } = await supabase
+        .from('parqueo')
+        .select('ParqCantidad')
+        .eq('ParqTipo', vehTipo)
+        .eq('SedeId', sedId)
+        .single(); 
+  
+      if (error) {
+        console.error('Error al verificar disponibilidad:', error);
+        return false;  
+      }
+  
+      if (data && data.ParqCantidad > 0) {
+    
+        return true;
+      } else {
+        return false; 
+      }
+    } catch (error) {
+      console.error('Error inesperado en verificarDisponibilidad:', error);
+      return false;
+    }
+  };
+  
+  
+  
+  const registrarEntrada = async () => {
+    const vehiculo = await buscarVehiculoPorPlaca();
+    if (!vehiculo) return;
+  
+    const permitido = await verificarIngresoAnterior(vehiculo.VehId);
+    if (!permitido) {
+      alert('Este vehículo ya está registrado en el estacionamiento y debe registrar una salida antes de ingresar nuevamente.');
+      return;
+    }
+  
+    const adminYSede = await obtenerAdminYSede();
+    if (!adminYSede) return;
+  
+    const { adminNombreCompleto, sedId } = adminYSede;
+    const hayDisponibilidad = await verificarDisponibilidad(vehiculo.VehTipo, sedId);
+    if (!hayDisponibilidad) {
+      alert('No hay espacios disponibles para este tipo de vehículo.');
+      return;
+    }
+  
+    try {
+      const colombianTime = DateTime.now().setZone('America/Bogota').toISO();
+
+      const { data, error: getError } = await supabase
+        .from('parqueo')
+        .select('ParqId, ParqCantidad, ParqUbicacion')
+        .eq('ParqTipo', vehiculo.VehTipo)
+        .eq('SedeId', sedId);
+  
+      if (getError) {
+        console.error('Error al obtener disponibilidad del parqueo:', getError);
+        alert('No se pudo obtener disponibilidad del parqueo.');
+        return;
+      }
+  
+   
+      let registroDisponible = null;
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].ParqCantidad > 0) {
+          registroDisponible = data[i];
+          break; 
+        }
+      }
+  
+      if (registroDisponible) {
+       
+        const { error: updateError } = await supabase
+          .from('parqueo')
+          .update({ ParqCantidad: registroDisponible.ParqCantidad - 1 })
+          .eq('ParqId', registroDisponible.ParqId);
+  
+        if (updateError) {
+          console.error('Error al decrementar la cantidad de parqueo:', updateError);
+          alert('No se pudo actualizar la disponibilidad del parqueo.');
+          return;
+        }
+  
+       
+        const { error: insertError } = await supabase.from('planilla').insert({
+          FechaEntrada: colombianTime,
+          AdminEntrada: adminNombreCompleto,
+          VehId: vehiculo.VehId,
+          UsuaId: vehiculo.UsuaId,
+          SedId: sedId,
+        });
+  
+        if (insertError) {
+          console.error('Error al registrar entrada:', insertError);
+          alert('No se pudo registrar la entrada');
+        } else {
+          alert('Entrada registrada exitosamente');
+        }
+      } else {
+        alert('No hay espacio disponible para este tipo de vehículo.');
+      }
+      actualizarDisponibilidad();
+      fetchPlanillas();
+      
+    } catch (error) {
+      console.error('Error en registrarEntrada:', error);
+      alert('Error inesperado al registrar la entrada');
+    }
+  };
+  
+  
+  const registrarSalida = async () => {
+    try {
+  
+      const vehiculo = await buscarVehiculoPorPlaca();
+      if (!vehiculo) {
+        alert('Vehículo no encontrado');
+        return;
+      }
+  
+      const vehId = vehiculo.VehId;
+  
+    
+      const { data: ingresoPrevio, error: ingresoPrevioError } = await supabase
+        .from('planilla')
+        .select('PlanId, FechaEntrada, FechaSalida')
+        .eq('VehId', vehId)
+        .is('FechaSalida', null) 
+        .order('FechaEntrada', { ascending: false })
+        .limit(1)
+        .single();
+  
+      if (ingresoPrevioError || !ingresoPrevio) {
+        console.error('Error al obtener ingreso previo:', ingresoPrevioError);
+        alert('No se encontró un registro de entrada pendiente de salida');
+        return;
+      }
+  
+      console.log('Ingreso previo encontrado:', ingresoPrevio); 
+  
+      const adminYSede = await obtenerAdminYSede();
+      if (!adminYSede) return;
+      const { adminNombreCompleto, sedId } = adminYSede;
+  
+      const colombianTime = DateTime.now().setZone('America/Bogota').toISO();
+  
+    
+      const { data: updateData, error: updateError } = await supabase
+        .from('planilla')
+        .update({
+          FechaSalida: colombianTime,
+          AdminSalida: adminNombreCompleto
+        })
+        .eq('PlanId', ingresoPrevio.PlanId);
+  
+      if (updateError) {
+        console.error('Error al actualizar salida:', updateError);
+        alert('No se pudo registrar la salida');
+        return;
+      }
+  
+      console.log('Salida registrada con éxito en planilla:', updateData);
+  
+ 
+      const { data, error: getError } = await supabase
+        .from('parqueo')
+        .select('ParqId, ParqCantidad, ParqUbicacion')
+        .eq('ParqTipo', vehiculo.VehTipo)
+        .eq('SedeId', sedId);
+  
+      if (getError) {
+        console.error('Error al obtener disponibilidad del parqueo:', getError);
+        alert('No se pudo obtener disponibilidad del parqueo.');
+        return;
+      }
+  
+      console.log('Datos de parqueo disponibles:', data);
+  
+      let registroDisponible = null;
+      for (let i = 0; i < data.length; i++) {
+     
+        if (data[i].ParqCantidad > 0) {
+          registroDisponible = data[i];
+          break; 
+        }
+      }
+  
+      if (registroDisponible) {
+        const { error: incrementError } = await supabase
+          .from('parqueo')
+          .update({ ParqCantidad: registroDisponible.ParqCantidad + 1 })
+          .eq('ParqId', registroDisponible.ParqId);
+  
+        if (incrementError) {
+          console.error('Error al incrementar disponibilidad del parqueo:', incrementError);
+          alert('No se pudo actualizar la disponibilidad del parqueo.');
+          return;
+        }
+  
+        alert('Salida registrada exitosamente');
+      } else {
+        alert('No se pudo actualizar la disponibilidad del parqueo.');
+      }
+
+      actualizarDisponibilidad();
+      fetchPlanillas();
+
+    } catch (error) {
+      console.error('Error en registrarSalida:', error);
+      alert('Error inesperado al registrar la salida');
+    }
+  };
+  
+  
+  
+  const cargarDisponibilidad = async (sedeId) => {
+    try {
+      const { data, error } = await supabase
+        .from('parqueo')
+        .select('ParqCantidad, ParqTipo, ParqUbicacion')
+        .eq('SedeId', sedeId);
+  
+      if (error) {
+        console.error('Error al cargar disponibilidad:', error);
+        alert('No se pudo cargar la disponibilidad.');
+        return;
+      }
+  
+      setDisponibilidad(data || []); 
+    } catch (error) {
+      console.error('Error inesperado al cargar disponibilidad:', error);
+      alert('Error inesperado al cargar la disponibilidad.');
+    }
+  };
+
+  useEffect(() => {
+    const selectedSede = JSON.parse(localStorage.getItem('selectedSede'));
+    if (selectedSede && selectedSede.SedId) {
+      cargarDisponibilidad(selectedSede.SedId);
+    } else {
+      alert('Sede no seleccionada. Por favor selecciona una sede antes de continuar.');
+    }
+  }, []);
+
   return (
     <ContainerDashboard>
       <Header />
       <main className="main-content">
         <div className="container-sections">
 
-          {/* Sección de entrada y salida */}
           <div className="input-section">
             <label htmlFor="vehicle-info">Ingresa la placa o número de serie del vehículo:</label>
             <input
@@ -361,23 +379,29 @@ const handleRegistrarSalida = async () => {
               onChange={(e) => setVehicleInfo(e.target.value)}
             />
             <div className="button-container">
-              <button type="button" onClick={handleRegistrarEntrada}>Registrar Entrada</button>
-              <button type="button" onClick={handleRegistrarSalida}>Registrar Salida</button>
+              <button type="button" onClick={registrarEntrada}>Registrar Entrada</button>
+              <button type="button" onClick={registrarSalida}>Registrar Salida</button>
             </div>
           </div>
 
-          {/* Sección de disponibilidad */}
           <div className="availability-section">
             <h1>Disponibilidad</h1>
-            <ul>
-              {Object.entries(availability).map(([tipo, espacios]) => (
-                <li key={tipo}>{`${tipo}: ${espacios} espacios libres`}</li>
-              ))}
-            </ul>
-          </div>
+                  {disponibilidad.length > 0 ? (
+        <ul>
+            {disponibilidad.map((parqueo, index) => (
+        <li key={index}>
+          <strong>Tipo:</strong> {parqueo.ParqTipo} <br />
+          <strong>Espacios:</strong> {parqueo.ParqCantidad} <br />
+          <strong>Ubicación:</strong> {parqueo.ParqUbicacion}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p>No hay información de disponibilidad para esta sede.</p>
+  )}
+</div>
         </div>
 
-        {/* Sección de planillas */}
         <div className="table-section">
           <h2>Planilla</h2>
           <table>
@@ -397,7 +421,7 @@ const handleRegistrarSalida = async () => {
               </tr>
             </thead>
             <tbody>
-              {planillas.length > 0 ? ( 
+              {planillas.length > 0 ? (
                 planillas.map((planilla, index) => (
                   <tr key={`${planilla.UsuaId}-${index}`}>
                     <td>{planilla.UsuaNombre}</td>
@@ -406,10 +430,10 @@ const handleRegistrarSalida = async () => {
                     <td>{planilla.VehPlaca}</td>
                     <td>{planilla.VehAutorizacion}</td>
                     <td>{planilla.FechaEntrada}</td>
-                    <td>{planilla.FechaSalida || 'N/A'}</td>
-                    <td>{planilla.DuracionEstacionamiento || 'N/A'}</td>
+                    <td>{planilla.FechaSalida}</td>
+                    <td>{planilla.DuracionEstacionamiento}</td>
                     <td>{planilla.AdminEntrada}</td>
-                    <td>{planilla.AdminSalida || 'N/A'}</td>
+                    <td>{planilla.AdminSalida}</td>
                     <td>{planilla.SedNombre}</td>
                   </tr>
                 ))

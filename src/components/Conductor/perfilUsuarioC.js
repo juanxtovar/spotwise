@@ -1,4 +1,5 @@
 import './styles/perfilUsuarioC.scss';
+import LoadingSpinner from './loadingSpinner';
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -39,14 +40,13 @@ export default function Perfil() {
     fetchProfile();
   }, []);
 
-  if (loading) return <div>Cargando perfil...</div>;
+  if (loading) return <LoadingSpinner />;
   if (error) return <div>{error}</div>;
 
   return (
     <div className="containerMain">
       {userData ? (
         <div className="container">
-          <h1 className="title">Perfil de Usuario</h1>
           <div className="info">
             <p><strong>Nombre:</strong> {userData.UsuaNombre}</p>
           </div>

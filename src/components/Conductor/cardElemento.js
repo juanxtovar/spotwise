@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { AiOutlineClose } from 'react-icons/ai'; 
 import AddElemento from './addElemento'; 
+import LoadingSpinner from './loadingSpinner';
 import './styles/cardElementos.scss'; 
 
 const supabase = createClient('https://kfptoctchniilzgtffns.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtmcHRvY3RjaG5paWx6Z3RmZm5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU5ODQ2MDEsImV4cCI6MjA0MTU2MDYwMX0.M01co6Y65XOSXHvViCSalZRCrVnNLAAPnqcZKjxuBrE');
@@ -10,64 +11,59 @@ export default function CardElemento() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const fetchItems = async () => {
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        setError('Error al obtener el usuario autenticado.');
+        setLoading(false);
+        return;
+      }
+
+      const { data: usuario, error: usuarioError } = await supabase
+        .from('usuarios')
+        .select('UsuaId')
+        .eq('AuthId', user.id)
+        .single();
+
+      if (usuarioError || !usuario) {
+        setError('Error al obtener el UsuaId del usuario.');
+        setLoading(false);
+        return;
+      }
+
+      const usuaId = usuario.UsuaId;
+
+      const { data: items, error: itemsError } = await supabase
+        .from('vista_ingreso_elementos')
+        .select('*')
+        .eq('UsuaId', usuaId);
+
+      if (itemsError) {
+        setError('Error al obtener los elementos: ' + itemsError.message);
+        setLoading(false);
+        return;
+      }
+
+      setItems(items);
+      setLoading(false);
+    } catch (err) {
+      setError('Error inesperado al obtener los datos.');
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-        if (userError || !user) {
-          setError('Error al obtener el usuario autenticado.');
-          setLoading(false);
-          return;
-        }
-
-        const { data: usuario, error: usuarioError } = await supabase
-          .from('usuarios')
-          .select('UsuaId')
-          .eq('AuthId', user.id)
-          .single();
-
-        if (usuarioError || !usuario) {
-          setError('Error al obtener el UsuaId del usuario.');
-          setLoading(false);
-          return;
-        }
-
-        const usuaId = usuario.UsuaId;
-
-        const { data: items, error: itemsError } = await supabase
-          .from('vista_ingreso_elementos') 
-          .select('*')
-          .eq('UsuaId', usuaId);  
-
-        if (itemsError) {
-          setError('Error al obtener los elementos: ' + itemsError.message);
-          setLoading(false);
-          return;
-        }
-
-        setItems(items);
-        setLoading(false);
-      } catch (err) {
-        setError('Error inesperado al obtener los datos.');
-        setLoading(false);
-      }
-    };
-
     fetchItems();
   }, []);
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleAdd = () => {
-    setIsModalOpen(true);
-  };
-
   const handleDelete = async (id) => {
+    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este elemento?');
+    if (!confirmDelete) return;
+
     try {
       const { error } = await supabase
         .from('ingresoElementos')
@@ -77,14 +73,22 @@ export default function CardElemento() {
       if (error) {
         setError('Error al eliminar el elemento: ' + error.message);
       } else {
-        setItems(items.filter(item => item.InId !== id));
+        await fetchItems();
       }
     } catch (err) {
       setError('Error inesperado al eliminar el elemento.');
     }
   };
 
-  if (loading) return <p>Cargando elementos...</p>;
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleAdd = () => {
+    setIsModalOpen(true);
+  };
+
+  if (loading) return <LoadingSpinner />;
   if (error) return <p>{error}</p>;
 
   return (
@@ -97,19 +101,18 @@ export default function CardElemento() {
         <div className="element-list">
           {items.map(item => (
             <div key={item.InId} className="element-card">
-              <AiOutlineClose 
-                className="delete-icon" 
-                onClick={() => handleDelete(item.InId)} 
+              <AiOutlineClose
+                className="delete-icon"
+                onClick={() => handleDelete(item.InId)}
               />
-              <div 
+              <div
                 className={`autorizacion-status ${item.InAutorizado ? 'authorized' : 'not-authorized'}`}
-              >
-              </div>
+              ></div>
               <div className="container-info">
-                <h3>{item.ElemNombre}</h3> 
+                <h3>{item.ElemNombre}</h3>
                 <div className="container-p">
                   <p>{item.InMarca}</p>
-                  <p>{item.InSerial}</p> 
+                  <p>{item.InSerial}</p>
                 </div>
               </div>
             </div>
@@ -126,4 +129,3 @@ export default function CardElemento() {
     </div>
   );
 }
-

@@ -62,7 +62,7 @@ const ReportePlanillaUsuarios = () => {
   
         if (error) throw error;
   
-        console.log(data); // Verifica los datos que recibes
+        console.log(data); 
         setReporte(data);
       } catch (error) {
         setError(error.message);
@@ -73,7 +73,7 @@ const ReportePlanillaUsuarios = () => {
   
     return (
       <div className="reporte-planilla">
-        <h2>Generar Reporte de Planilla de Usuarios Activos</h2>
+        <h2>Generar Reporte de Ingreso y Salida</h2>
         <form onSubmit={handleSubmit}>
           <label>
             Fecha Inicio:

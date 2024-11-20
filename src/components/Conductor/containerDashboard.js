@@ -9,7 +9,7 @@ export default function ContainerDashboard({ children }) {
         flexDirection:'column',
         height: '100vh',
         overflowX:'hidden',
-        overflowY:'auto'
+        overflowY:'auto',
     }}>
         {children}
     </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import AddVehicleModal from './addVehiculo';
 import InfoVehiculo from './infoVehiculo'; 
+import LoadingSpinner from './loadingSpinner';
 import './styles/cardVehiculos.scss';
 import PlaceholderImage from '../../assets/img/estacionamiento.jpg'; 
 
@@ -109,7 +110,7 @@ export default function CardVehiculos() {
     setSelectedVehicle(null);
   };
 
-  if (loading) return <p className="loading-message">Cargando vehículos...</p>;
+  if (loading) return <LoadingSpinner />;
   if (error) return <p className="error-message">{error}</p>;
 
   const handleVehicleAdded = (newVehicle) => {

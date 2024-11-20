@@ -12,6 +12,7 @@ import ReporteUsuarios from './screens/Conductor/reporteUsuarios';
 import PerfilUsuario from './screens/Conductor/perfilUsuario';
 import Validacion from './components/Administrador/validacion';
 import ValidacionUsuarios from './components/Administrador/validacionusuarios';
+import PerfilUsuario2 from './components/Administrador/perfilUsuario2';
 import './App.css';
 import Logo from'./assets/img/Spotwise.gif';
 
@@ -39,6 +40,14 @@ function App() {
           <button onClick={handleLogup}>Registrarse</button>
         </div>
       </div>
+      <div className="">
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+      </div>
     </Container>
   );
 }
@@ -60,6 +69,7 @@ function MainApp() {
         <Route path="/perfilUsuario" element={<PerfilUsuario/>}/>
         <Route path="/validacion" element={<Validacion/>}/>
         <Route path="/validacionusuarios" element={<ValidacionUsuarios/>}/>
+        <Route path="/perfilUsuario2" element={<PerfilUsuario2/>}/>
       </Routes>
     </Router>
   );

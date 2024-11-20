@@ -72,6 +72,7 @@ $secondary-color: #007832;
     background-color: #fff;
     transition: all 0.3s ease;
     transform-origin: center; 
+    border-radius: 5px;
 
     &:nth-child(1) {
       transform-origin: center; 
@@ -83,7 +84,7 @@ $secondary-color: #007832;
   }
 
   &.open .line:nth-child(1) {
-    transform: rotate(-45deg); 
+    transform: rotate(-40deg); 
   }
 
   &.open .line:nth-child(2) {
@@ -91,6 +92,6 @@ $secondary-color: #007832;
   }
 
   &.open .line:nth-child(3) {
-    transform: rotate(  45deg); 
+    transform: rotate(  40deg); 
   }
 }

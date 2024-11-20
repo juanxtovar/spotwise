@@ -1,6 +1,6 @@
 import ContainerDashboard from "../Conductor/containerDashboard";
 import './styles/validacion.scss';
-import Header from "../Conductor/header";
+import Header from "./header2";
 import { createClient } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
@@ -9,17 +9,16 @@ const supabase = createClient('https://kfptoctchniilzgtffns.supabase.co', 'eyJhb
 export default function AutorizacionVehiculos() {
     const [vehiculos, setVehiculos] = useState([]);
 
-    // Consulta para obtener los datos de la tabla vehiculo y usuarios
     const fetchVehiculosConUsuarios = async () => {
         let { data, error } = await supabase
-            .from('vehiculo') // Tabla de vehiculos
+            .from('vehiculo') 
             .select(`
                 VehPlaca,
                 VehTipo,
                 VehAutorizacion,
                 usuarios!inner(UsuaNombre, UsuaApellido)
             `)
-            .order('VehAutorizacion', { ascending: true }); // Ordenar por VehAutorizacion: no autorizados primero
+            .order('VehAutorizacion', { ascending: true }); 
 
         if (error) {
             console.error("Error fetching vehicles: ", error);
@@ -28,17 +27,16 @@ export default function AutorizacionVehiculos() {
         }
     };
 
-    // Función para actualizar el estado de autorización
     const toggleAutorizacion = async (VehPlaca, VehAutorizacion) => {
         let { data, error } = await supabase
             .from('vehiculo')
-            .update({ VehAutorizacion: !VehAutorizacion }) // Cambia el estado de autorización
+            .update({ VehAutorizacion: !VehAutorizacion }) 
             .eq('VehPlaca', VehPlaca);
 
         if (error) {
             console.error("Error updating authorization: ", error);
         } else {
-            fetchVehiculosConUsuarios(); // Refresca los datos después de la actualización
+            fetchVehiculosConUsuarios(); 
         }
     };
 

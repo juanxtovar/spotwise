@@ -143,6 +143,7 @@ export default function AddVehiculo({ isOpen, onClose, onVehicleAdded }) {
             type="file"
             accept="image/*"
             onChange={handleImageChange}
+            required
           />
           <button type="submit">Agregar</button>
         </form>

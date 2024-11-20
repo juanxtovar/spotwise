@@ -1,13 +1,12 @@
 import ContainerDashboard from "../Conductor/containerDashboard";
-import './styles/dashboardAdmin.scss';
 import Header from "./header2";
-import Sede from "./SedeAdmin"
+import Perfil from "../Conductor/perfil";
 
-export default function DashboardAdmin() {
+export default function PerfilUsuario() {
   return (
     <ContainerDashboard>
       <Header/>
-      <Sede/>
+      <Perfil/>
     </ContainerDashboard>
   );
 }

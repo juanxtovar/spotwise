@@ -1,6 +1,6 @@
 import ContainerDashboard from "../Conductor/containerDashboard";
 import './styles/validacionusuarios.scss';
-import Header from "../Conductor/header";
+import Header from "./header2";
 import { createClient } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
@@ -9,12 +9,11 @@ const supabase = createClient('https://kfptoctchniilzgtffns.supabase.co', 'eyJhb
 export default function AutorizacionObjetos() {
     const [objetos, setObjetos] = useState([]);
 
-    // Consulta para obtener los datos de la vista vista_ingreso_elementos
     const fetchObjetosConUsuarios = async () => {
         let { data, error } = await supabase
-            .from('vista_ingreso_elementos') // Usamos la vista directamente
-            .select('*') // Seleccionamos todas las columnas
-            .order('InAutorizado', { ascending: true }); // Ordenar por InAutorizado: no autorizados primero
+            .from('vista_ingreso_elementos') 
+            .select('*') 
+            .order('InAutorizado', { ascending: true });
 
         if (error) {
             console.error("Error fetching objects: ", error);
@@ -23,17 +22,16 @@ export default function AutorizacionObjetos() {
         }
     };
 
-    // Función para actualizar el estado de autorización de un objeto
     const toggleAutorizacion = async (InSerial, InAutorizado) => {
         let { data, error } = await supabase
-            .from('ingresoElementos') // Actualizamos en la tabla original, no en la vista
-            .update({ InAutorizado: !InAutorizado }) // Cambiar el estado de autorización
-            .eq('InSerial', InSerial); // Usamos el serial como identificador único
+            .from('ingresoElementos') 
+            .update({ InAutorizado: !InAutorizado }) 
+            .eq('InSerial', InSerial);
 
         if (error) {
             console.error("Error updating authorization: ", error);
         } else {
-            fetchObjetosConUsuarios(); // Refrescar datos después de la actualización
+            fetchObjetosConUsuarios(); 
         }
     };
 

@@ -79,6 +79,7 @@ export default function AddElemento({ isOpen, onClose, setItems }) {
       } else if (data && data.length > 0) {  
         setItems(prevItems => [...prevItems, data[0]]);
         onClose(); 
+        window.alert('¡Elemento agregado exitosamente!');
       } else {
         setError('No se devolvieron datos después de insertar el elemento.');
       }
