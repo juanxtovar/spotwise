@@ -1,40 +1,69 @@
-body{
+body {
     margin: 0;
     padding: 0;
 }
-.background{
-    background: #fff;
+
+.background {
+    background-image: url('./assets/img/estacionamiento.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative; 
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    height: 100vh; 
+    width: 100%;
 }
-.container-logo{
+
+.background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 0;
+}
+
+.container-logo,
+.text,
+.button-container {
+    position: relative;
+    z-index: 1;
+}
+
+.container-logo {
     width: 40%;
     height: 40%;
 }
-.logo{
+
+.logo {
     height: 100%;
     width: 100%;
-    object-fit: cover;    
+    object-fit: cover;
 }
 
-.text{
-    color: #000;
+.text {
+    color: #fff; 
     font-size: 1.5rem;
     width: 50%;
     text-align: center;
     margin: 0;
     margin-bottom: 20px;
 }
-.button-container{
+
+.button-container {
     display: flex;
     flex-direction: row;
     gap: 100px;
     width: 50%;
     height: 4rem;
 }
-.button-container button{
+
+.button-container button {
     background-color: #39A900;
     color: #fff;
     border: none;
@@ -47,7 +76,8 @@ body{
     transition: 0.8s;
     cursor: pointer;
 }
-.button-container button:hover{
+
+.button-container button:hover {
     background-color: #007832;
     color: #fff;
     transform: translateY(-5px);

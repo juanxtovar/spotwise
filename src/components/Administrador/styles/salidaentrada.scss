@@ -66,12 +66,12 @@ $secondary-color: #007832;
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
-      padding: 20px;
+      flex-direction:column;
+      padding: 10px;
       background-color: #f9f9f9;
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      width: 250px;
+      width: 230px;
   
       h1 {
         margin-bottom: 10px;
@@ -83,7 +83,7 @@ $secondary-color: #007832;
         display: flex;
         justify-content: space-between;
         margin-bottom: 5px;
-        width: 90%;
+        width: 100%;
   
         p {
           margin: 0;
@@ -125,4 +125,23 @@ $secondary-color: #007832;
       }
     }
   }
+  .registrar-invitado-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    background-color: $primary-color;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
   
+    &:hover {
+      background-color: $secondary-color;
+    }
+  
+    &:active {
+      background-color: darken($secondary-color, 10%);
+    }
+  }

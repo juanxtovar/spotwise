@@ -13,8 +13,10 @@ import PerfilUsuario from './screens/Conductor/perfilUsuario';
 import Validacion from './components/Administrador/validacion';
 import ValidacionUsuarios from './components/Administrador/validacionusuarios';
 import PerfilUsuario2 from './components/Administrador/perfilUsuario2';
+import RegistrarInvitado from './components/Administrador/RegistrarInvitado';
+
 import './App.css';
-import Logo from'./assets/img/Spotwise.gif';
+import Logo from'./assets/img/spotwiseVerde.png';
 
 function App() {
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ function App() {
         <div className='container-logo'>
           <img src={Logo} className='logo'></img>
         </div>
-        <p className="text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque consectetur ad, dolorem quae tempore debitis autem fugit animi libero necessitatibus culpa. Veniam omnis, similique non tempora repudiandae laudantium necessitatibus ab!</p>
+        <p className="text">Bienvenidos a Spotwise, el sitio donde podra mejorar la experiencia de su estacionamiento.</p>
         <div className="button-container">
           <button onClick={handleLogin}>Iniciar Sesión</button>
           <button onClick={handleLogup}>Registrarse</button>
@@ -42,10 +44,12 @@ function App() {
       </div>
       <div className="">
         <div>
-
+          <h2></h2>
+          <p></p>
         </div>
         <div>
-
+          <h2></h2>
+          <p></p>
         </div>
       </div>
     </Container>
@@ -70,6 +74,7 @@ function MainApp() {
         <Route path="/validacion" element={<Validacion/>}/>
         <Route path="/validacionusuarios" element={<ValidacionUsuarios/>}/>
         <Route path="/perfilUsuario2" element={<PerfilUsuario2/>}/>
+        <Route path="/RegistrarInvitado" element={<RegistrarInvitado/>}/>
       </Routes>
     </Router>
   );

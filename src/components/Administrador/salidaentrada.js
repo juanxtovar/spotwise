@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import ContainerDashboard from "../Conductor/containerDashboard";
 import './styles/salidaentrada.scss';
-import Header from "./header2";
+import Header from "../Conductor/header";
 import { createClient } from '@supabase/supabase-js';
 import { DateTime } from 'luxon';
+import { useNavigate, useLocation } from "react-router-dom";
 
 const supabase = createClient('https://kfptoctchniilzgtffns.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtmcHRvY3RjaG5paWx6Z3RmZm5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU5ODQ2MDEsImV4cCI6MjA0MTU2MDYwMX0.M01co6Y65XOSXHvViCSalZRCrVnNLAAPnqcZKjxuBrE');
 
@@ -16,7 +17,9 @@ export default function SalidaEntrada() {
   const [usuaId, setUsuaId] = useState(null);
   const [sedId, setSedId] = useState(null);
   const [disponibilidad, setDisponibilidad] = useState([]);
+  const location = useLocation();
   
+  const navigate = useNavigate();
 
   const obtenerAdminYSede = async () => {
     const selectedSede = JSON.parse(localStorage.getItem('selectedSede'));
@@ -384,6 +387,12 @@ export default function SalidaEntrada() {
             </div>
           </div>
 
+          <button  className="registrar-invitado-btn" onClick={() => 
+           navigate("/RegistrarInvitado", { state: { backgroundLocation: location } })
+        }
+>
+        Registrar Invitado
+      </button>
           <div className="availability-section">
             <h1>Disponibilidad</h1>
                   {disponibilidad.length > 0 ? (
